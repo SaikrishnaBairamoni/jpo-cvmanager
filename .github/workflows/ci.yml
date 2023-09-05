@@ -29,6 +29,10 @@ jobs:
         with:
           name: build_api
           path: api/tests/coverage.xml
+      - name: Find coverage.xml
+        shell: bash
+        run: |
+          find "$GITHUB_WORKSPACE" -name "coverage.xml"          
   webapp:
     runs-on: ubuntu-latest
     container:
@@ -52,6 +56,10 @@ jobs:
         with:
           name: webapp
           path: webapp/coverage/*
+      - name: Find lcov.info
+        shell: bash
+        run: |
+          find "$GITHUB_WORKSPACE" -name "lcov.info"          
   sonar:
     needs: [build_api, webapp]
     runs-on: ubuntu-latest
