@@ -20,12 +20,12 @@ jobs:
       - name: Run tests
         run: |
           export PYTHONPATH=$PYTHONPATH:/usr/lib/python3/dist-packages
-          cd $GITHUB_WORKSPACE/api/test/
+          cd $GITHUB_WORKSPACE/api/tests/
           python3 -m coverage run -m pytest
           python3 -m coverage xml --omit="/opt/*,/root/*,/tmp/*,/usr/*,/var/*,**/__init__.py"
       - name: Archive code coverage results
         uses: actions/upload-artifact@v3
         with:
           name: API
-          path: $GITHUB_WORKSPACE/api/test/coverage.xml
+          path: $GITHUB_WORKSPACE/api/tests/coverage.xml
           if-no-files-found: error
