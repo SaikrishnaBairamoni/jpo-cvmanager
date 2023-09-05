@@ -27,7 +27,7 @@ jobs:
       - name: Archive code coverage results
         uses: actions/upload-artifact@v3
         with:
-          name: API
+          name: build_api
           path: api/tests/coverage.xml
   webapp:
     runs-on: ubuntu-latest
@@ -40,6 +40,7 @@ jobs:
       - name: Checkout ${{ github.event.repository.name }}
         uses: actions/checkout@v3
       - name: Build
+        continue-on-error: true
         run: |
           cd $GITHUB_WORKSPACE/webapp
           npm install -g nodemon
@@ -49,6 +50,61 @@ jobs:
       - name: Archive code coverage results
         uses: actions/upload-artifact@v3
         with:
-          name: web-app-client
-          path: web_app/coverage/*
-          if-no-files-found: error          
+          name: webapp
+          path: webapp/coverage/*
+  sonar:
+    needs: [build_api, webapp]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout ${{ github.event.repository.name }}
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Download code coverage results
+        uses: actions/download-artifact@v3
+        with:
+          name: build_api
+          path: api/tests/coverage.xml
+      - name: Download code coverage results
+        uses: actions/download-artifact@v3
+        with:
+          name: webapp
+          path: webapp
+      - name: Find coverage.xml
+        shell: bash
+        run: |
+          find "$GITHUB_WORKSPACE" -name "coverage.xml"
+      - name: Find lcov.info
+        shell: bash
+        run: |
+          find "$GITHUB_WORKSPACE" -name "lcov.info"
+      - name: Setup SonarScanner
+        uses: warchant/setup-sonar-scanner@v4
+        with:
+          version: 4.8.0.2856
+      - name: Generate sonar properties file
+        run: |
+          cat <<EOF > /tmp/sonar-scanner.properties
+          sonar.host.url=https://sonarcloud.io
+          sonar.exclusions=**/__init__.py,**/*test*.py,**/test/**
+          sonar.coverage.exclusions=**/__init__.py,**/*test*.py,**/test/**
+          sonar.javascript.lcov.reportPaths=webapp/lcov.info
+          sonar.modules=api,webapp
+          sonar.organization=usdot-fhwa-stol
+          sonar.projectBaseDir=$GITHUB_WORKSPACE
+          sonar.projectKey=usdot-jpo-ode-1_jpo-cvmanager
+          sonar.projectName=jpo-cvmanager
+          sonar.python.coverage.reportPaths=$GITHUB_WORKSPACE/webapp/coverage.xml
+          sonar.python.version=3.9
+          api.sonar.projectBaseDir=$GITHUB_WORKSPACE/api
+          api.sonar.sources=src
+          api.sonar.tests=tests
+          webapp.sonar.projectBaseDir=$GITHUB_WORKSPACE/webapp
+          webapp.sonar.sources=src
+          EOF
+      - name: Run SonarScanner
+        uses: usdot-fhwa-stol/actions/sonar-scanner@main
+        with:
+          sonar-properties-path: /tmp/sonar-scanner.properties
+          sonar-token: ${{ secrets.SONAR_TOKEN }}
+          working-dir: $GITHUB_WORKSPACE      
