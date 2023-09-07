@@ -96,13 +96,13 @@ jobs:
           sonar.host.url=https://sonarcloud.io
           sonar.exclusions=**/__init__.py,**/*test*.py,**/test/**
           sonar.coverage.exclusions=**/__init__.py,**/*test*.py,**/test/**
-          sonar.javascript.lcov.reportPaths=webapp/lcov.info
+          sonar.javascript.lcov.reportPaths=/home/runner/work/jpo-cvmanager/jpo-cvmanager/webapp/lcov.info
           sonar.modules=api,webapp
           sonar.organization=usdot-jpo-ode-1
           sonar.projectBaseDir=$GITHUB_WORKSPACE
           sonar.projectKey=usdot-jpo-ode-1_jpo-cvmanager
           sonar.projectName=jpo-cvmanager
-          sonar.python.coverage.reportPaths=$GITHUB_WORKSPACE/webapp/coverage.xml
+          sonar.python.coverage.reportPaths=$GITHUB_WORKSPACE/api/tests/coverage.xml
           sonar.python.version=3.9
           api.sonar.projectBaseDir=$GITHUB_WORKSPACE/api
           api.sonar.sources=src
