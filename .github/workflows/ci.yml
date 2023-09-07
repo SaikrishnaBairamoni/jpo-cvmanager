@@ -32,7 +32,7 @@ jobs:
       - name: Find coverage.xml
         shell: bash
         run: |
-          find "$GITHUB_WORKSPACE" -name "coverage.xml"          
+          find "$GITHUB_WORKSPACE/api/tests" -name "coverage.xml"         
   webapp:
     runs-on: ubuntu-latest
     container:
