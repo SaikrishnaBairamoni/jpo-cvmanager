@@ -98,7 +98,7 @@ jobs:
           sonar.coverage.exclusions=**/__init__.py,**/*test*.py,**/test/**
           sonar.javascript.lcov.reportPaths=webapp/lcov.info
           sonar.modules=api,webapp
-          sonar.organization=usdot-fhwa-stol
+          sonar.organization=usdot-jpo-ode-1
           sonar.projectBaseDir=$GITHUB_WORKSPACE
           sonar.projectKey=usdot-jpo-ode-1_jpo-cvmanager
           sonar.projectName=jpo-cvmanager
