@@ -32,7 +32,10 @@ jobs:
       - name: Find coverage.xml
         shell: bash
         run: |
-          find "$GITHUB_WORKSPACE/api/tests" -name "coverage.xml"         
+          find "$GITHUB_WORKSPACE/api/tests" -name "coverage.xml"    
+      - name: List files in directory
+        run: ls -R $GITHUB_WORKSPACE/api/tests
+
   webapp:
     runs-on: ubuntu-latest
     container:
